@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">PruebaIntercamAEMV</string>
+    <string name="user">Usuario</string>
+    <string name="contrasenia">Contraseña</string>
+    <string name="login">Ingresar</string>
+    <string name="error_login">Ambos Campos son Obligatorios</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="example_text_main_drink">Alice in Wonderland</string>
+    <string name="example_subtitle_drink">Cocktail</string>
+
+</resources>

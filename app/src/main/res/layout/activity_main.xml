@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/dark_blue.3F51B5"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar" />
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:visibility="gone"/>
 
 
     <androidx.fragment.app.FragmentContainerView

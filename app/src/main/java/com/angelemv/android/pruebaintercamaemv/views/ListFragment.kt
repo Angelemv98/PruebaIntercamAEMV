@@ -15,12 +15,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.angelemv.android.pruebaintercamaemv.R
 import com.angelemv.android.pruebaintercamaemv.databinding.FragmentListBinding
+import com.angelemv.android.pruebaintercamaemv.models.data.Drink
+import com.angelemv.android.pruebaintercamaemv.models.data.toBundle
 import com.angelemv.android.pruebaintercamaemv.models.interfaces.RetrofitInstance
 import com.angelemv.android.pruebaintercamaemv.models.repository.DrinksRepository
 import com.angelemv.android.pruebaintercamaemv.viewmodel.DrinksViewModel
 import com.angelemv.android.pruebaintercamaemv.viewmodel.DrinksViewModelFactory
 import com.angelemv.android.pruebaintercamaemv.views.adapters.DrinksAdapter
 
+// ListFragment.kt
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
@@ -55,7 +58,10 @@ class ListFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        drinksAdapter = DrinksAdapter()
+        drinksAdapter = DrinksAdapter { drink ->
+            val bundle = drink.toBundle()
+            findNavController().navigate(R.id.action_listFragment_to_detailFragment, bundle)
+        }
         binding.recyclerViewDrinks.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewDrinks.adapter = drinksAdapter
     }
@@ -88,3 +94,6 @@ class ListFragment : Fragment() {
         _binding = null
     }
 }
+
+
+

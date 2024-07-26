@@ -11,7 +11,8 @@ import com.angelemv.android.pruebaintercamaemv.databinding.ItemListDrinksBinding
 import com.angelemv.android.pruebaintercamaemv.models.data.Drink
 import com.squareup.picasso.Picasso
 
-class DrinksAdapter : ListAdapter<Drink, DrinksAdapter.DrinkViewHolder>(DrinkDiffCallback()) {
+class DrinksAdapter(private val onItemClickListener: (Drink) -> Unit) :
+    ListAdapter<Drink, DrinksAdapter.DrinkViewHolder>(DrinkDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DrinkViewHolder {
         val binding = ItemListDrinksBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -21,9 +22,13 @@ class DrinksAdapter : ListAdapter<Drink, DrinksAdapter.DrinkViewHolder>(DrinkDif
     override fun onBindViewHolder(holder: DrinkViewHolder, position: Int) {
         val drink = getItem(position)
         holder.bind(drink)
+        holder.itemView.setOnClickListener {
+            onItemClickListener(drink)
+        }
     }
 
-    class DrinkViewHolder(private val binding: ItemListDrinksBinding) : RecyclerView.ViewHolder(binding.root) {
+    class DrinkViewHolder(private val binding: ItemListDrinksBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(drink: Drink) {
             binding.tvTittle.text = drink.strDrink
             binding.tvSubTittle.text = drink.strCategory
@@ -47,3 +52,5 @@ class DrinksAdapter : ListAdapter<Drink, DrinksAdapter.DrinkViewHolder>(DrinkDif
         }
     }
 }
+
+

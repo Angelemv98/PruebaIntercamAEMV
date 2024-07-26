@@ -46,7 +46,6 @@ class LoginFragment : Fragment() {
                     binding.etUser.setText("")
                     binding.etPassword.setText("")
                     findNavController().navigate(R.id.action_mainFragment_to_listFragment)
-
                 }
 
             }

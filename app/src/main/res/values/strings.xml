@@ -10,5 +10,6 @@
     <string name="example_subtitle_drink">Cocktail</string>
     <string name="label_ingredients">Ingredientes</string>
     <string name="label_instructions">Instrucciones</string>
+    <string name="favorites">Favoritos</string>
 
 </resources>

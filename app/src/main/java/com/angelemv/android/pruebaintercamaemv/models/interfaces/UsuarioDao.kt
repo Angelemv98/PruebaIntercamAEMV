@@ -4,18 +4,25 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.angelemv.android.pruebaintercamaemv.models.data.UsuarioEntity
+import com.angelemv.android.pruebaintercamaemv.models.data.Favorito
+import com.angelemv.android.pruebaintercamaemv.models.data.Usuario
 
 @Dao
 interface UsuarioDao {
 
-    @Query("SELECT * FROM usuario")
-    fun getAll():List<UsuarioEntity>
+    @Query("SELECT * FROM usuarios WHERE username = :username AND password = :password LIMIT 1")
+     fun getUsuario(username: String, password: String): Usuario?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insert(usuario: UsuarioEntity)
+     fun insert(usuario: Usuario)
+}
 
 
+@Dao
+interface FavoritoDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+     fun insert(favorito: Favorito)
 
-
+    @Query("SELECT * FROM favoritos")
+     fun getFavoritos(): List<Favorito>
 }

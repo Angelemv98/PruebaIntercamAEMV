@@ -11,8 +11,6 @@ import kotlinx.coroutines.SupervisorJob
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    val applicationScope = CoroutineScope(SupervisorJob())
-    val database by lazy { AppDatabase.getInstance(this, applicationScope) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -5,52 +5,30 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.angelemv.android.pruebaintercamaemv.models.interfaces.FavoritoDao
 import com.angelemv.android.pruebaintercamaemv.models.interfaces.UsuarioDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@Database(entities = [UsuarioEntity::class], version = 1)
+@Database(entities = [Usuario::class, Favorito::class], version = 1, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao
+    abstract fun favoritoDao(): FavoritoDao
 
     companion object {
         @Volatile
-        private var instance: AppDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getInstance(ctx: Context, scope: CoroutineScope): AppDatabase {
-            return instance ?: synchronized(this) {
+        fun getDatabase(context: Context): AppDatabase {
+            return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
-                    ctx.applicationContext,
+                    context.applicationContext,
                     AppDatabase::class.java,
-                    "usuario"
-                )
-                    .fallbackToDestructiveMigration()
-                    .addCallback(AppDatabaseCallback(scope))
-                    .build()
-                this.instance = instance
+                    "app_database"
+                ).build()
+                INSTANCE = instance
                 instance
             }
-        }
-
-        private class AppDatabaseCallback(
-            private val scope: CoroutineScope
-        ) : RoomDatabase.Callback() {
-
-            override fun onCreate(db: SupportSQLiteDatabase) {
-                super.onCreate(db)
-                instance?.let { database ->
-                    scope.launch {
-                        populateDatabase(database.usuarioDao())
-                    }
-                }
-            }
-        }
-
-        suspend fun populateDatabase(usuarioDao: UsuarioDao) {
-
-            // Inserta el usuario inicial
-            val initialUser = UsuarioEntity(user = "Admin", password = "prueba123")
-            usuarioDao.insert(initialUser)
         }
     }
 }

@@ -1,10 +1,14 @@
+// ListFragment.kt
 package com.angelemv.android.pruebaintercamaemv.views
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -39,8 +43,15 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupRecyclerView()
         observeDrinks()
-        bindingConf()
+        setupToolbar()
         viewModel.searchDrinks("a") // Llamar a la API al iniciar
+    }
+
+    private fun setupToolbar() {
+        val toolbar: Toolbar = binding.toolbar
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+        toolbar.title = "Bebidas"
+        toolbar.setTitleTextColor(resources.getColor(R.color.white))
     }
 
     private fun setupRecyclerView() {
@@ -51,14 +62,25 @@ class ListFragment : Fragment() {
 
     private fun observeDrinks() {
         viewModel.drinks.observe(viewLifecycleOwner, Observer { drinks ->
+            binding.progressBar.visibility = View.GONE // Ocultar el loader
             drinks?.let {
                 drinksAdapter.submitList(it)
             }
         })
-    }
 
-    private fun bindingConf() {
-
+        viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
+            binding.progressBar.visibility = if (loading) {
+                View.VISIBLE // Mostrar el loader
+            } else {
+                View.GONE // Ocultar el loader
+            }
+        }
+        // Observar mensajes de error
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onDestroyView() {

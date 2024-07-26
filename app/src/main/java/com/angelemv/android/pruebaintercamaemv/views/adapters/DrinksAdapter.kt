@@ -1,3 +1,4 @@
+// DrinksAdapter.kt
 package com.angelemv.android.pruebaintercamaemv.views.adapters
 
 import android.view.LayoutInflater

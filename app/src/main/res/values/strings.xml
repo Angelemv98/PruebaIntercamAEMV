@@ -8,5 +8,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="example_text_main_drink">Alice in Wonderland</string>
     <string name="example_subtitle_drink">Cocktail</string>
+    <string name="label_ingredients">Ingredientes</string>
+    <string name="label_instructions">Instrucciones</string>
 
 </resources>

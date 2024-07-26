@@ -1,8 +1,12 @@
 // ListFragment.kt
 package com.angelemv.android.pruebaintercamaemv.views
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
@@ -44,18 +48,17 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val toolbar: Toolbar = binding.toolbar
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
+        toolbar.title = "Bebidas"
+        setHasOptionsMenu(true)
+
         setupRecyclerView()
         observeDrinks()
-        setupToolbar()
         viewModel.searchDrinks("a") // Llamar a la API al iniciar
     }
 
-    private fun setupToolbar() {
-        val toolbar: Toolbar = binding.toolbar
-        (activity as AppCompatActivity).setSupportActionBar(toolbar)
-        toolbar.title = "Bebidas"
-        toolbar.setTitleTextColor(resources.getColor(R.color.white))
-    }
 
     private fun setupRecyclerView() {
         drinksAdapter = DrinksAdapter { drink ->
@@ -89,11 +92,40 @@ class ListFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.toolbar_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_fav -> {
+                findNavController().navigate(R.id.action_listFragment_to_favFragment)
+                true
+            }
+            R.id.action_exit -> {
+                showExitDialog()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showExitDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Aviso")
+        builder.setMessage("¿Deseas salir de la aplicación?")
+        builder.setPositiveButton("Aceptar") { _, _ ->
+            requireActivity().finish() // Cierra la aplicación
+        }
+        builder.setNegativeButton("Cancelar") { dialog, _ ->
+            dialog.dismiss() // Cierra el diálogo
+        }
+        builder.create().show()    }
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
 }
-
-
-

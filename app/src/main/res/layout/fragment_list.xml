@@ -10,11 +10,11 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/dark_blue.3F51B5"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:title="Bebidas"
+        app:titleTextColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/dark_blue.3F51B5"
         />
 
     <ProgressBar
@@ -26,7 +26,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-    /> <!-- Oculto por defecto -->
+    />
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="6dp"

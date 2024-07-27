@@ -38,7 +38,12 @@ class DetailFragment : Fragment() {
                 // Usa el objeto drink para poblar tu UI
                 bin.etNameDrink.text = drink.strDrink
                 bin.tvIngedients.text = drink.getFormattedIngredients()
-                bin.tvInstructions.text = drink.strInstructions
+                if (drink.strInstructionsES!=null){
+                bin.tvInstructions.text = drink.strInstructionsES
+                }
+                else{
+                    bin.tvInstructions.text = drink.strInstructions
+                }
 
                 // Cargar imagen usando Picasso
                 Picasso.get()

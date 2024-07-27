@@ -20,20 +20,35 @@ class DrinksViewModel(private val repository: DrinksRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    fun searchDrinks(firstLetter: String) {
-        _isLoading.value = true // Establecer el estado de carga a true
+    var isDataLoaded = false
+
+    fun searchDrinksByLetters(startLetter: Char, endLetter: Char) {
+        if (isDataLoaded) {
+            // Los datos ya están cargados, no es necesario volver a cargar
+            return
+        }
+
+        _isLoading.value = true
         viewModelScope.launch {
             try {
-                val response = repository.searchDrinks(firstLetter)
-                _drinks.value = response.drinks // Aquí extraemos la lista de drinks del response
+                val allDrinks = mutableListOf<Drink>()
+                for (letter in startLetter..endLetter) {
+                    val response = repository.searchDrinks(letter.toString())
+
+                    if (!response.drinks.isNullOrEmpty()) {
+                        allDrinks.addAll(response.drinks)
+                    }
+                }
+                _drinks.value = allDrinks
+                isDataLoaded = true // Marcar que los datos han sido cargados
             } catch (e: Exception) {
-                // Manejar error
-                Log.e("DrinksViewModel", "Error al buscar bebidas: ${e.message}")
+                Log.e("DrinksViewModel", "Error al buscar bebidas: ${e.message}", e)
                 _errorMessage.value = "Error al cargar los datos. Por favor, verifica tu conexión."
             } finally {
-                _isLoading.value = false // Establecer el estado de carga a false
+                _isLoading.value = false
             }
         }
     }
+
 
 }

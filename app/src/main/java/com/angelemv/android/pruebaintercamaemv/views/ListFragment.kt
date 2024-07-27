@@ -1,4 +1,3 @@
-// ListFragment.kt
 package com.angelemv.android.pruebaintercamaemv.views
 
 import android.app.AlertDialog
@@ -17,8 +16,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.angelemv.android.pruebaintercamaemv.R
 import com.angelemv.android.pruebaintercamaemv.databinding.FragmentListBinding
+import com.angelemv.android.pruebaintercamaemv.models.data.AppDatabase
 import com.angelemv.android.pruebaintercamaemv.models.data.Drink
 import com.angelemv.android.pruebaintercamaemv.models.data.toBundle
 import com.angelemv.android.pruebaintercamaemv.models.interfaces.RetrofitInstance
@@ -27,13 +28,11 @@ import com.angelemv.android.pruebaintercamaemv.viewmodel.DrinksViewModel
 import com.angelemv.android.pruebaintercamaemv.viewmodel.DrinksViewModelFactory
 import com.angelemv.android.pruebaintercamaemv.views.adapters.DrinksAdapter
 
-// ListFragment.kt
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
     private lateinit var drinksAdapter: DrinksAdapter
 
-    // Instanciar el ViewModel usando el Factory
     private val viewModel: DrinksViewModel by viewModels {
         DrinksViewModelFactory(DrinksRepository(RetrofitInstance.api))
     }
@@ -56,22 +55,32 @@ class ListFragment : Fragment() {
 
         setupRecyclerView()
         observeDrinks()
-        viewModel.searchDrinksByLetters('a', 'z') // Llamar a la API al iniciar
+        viewModel.loadNextDrinks()
     }
 
-
     private fun setupRecyclerView() {
-        drinksAdapter = DrinksAdapter { drink ->
+        val favoritoDao = AppDatabase.getDatabase(requireContext()).favoritoDao()
+        drinksAdapter = DrinksAdapter(favoritoDao) { drink ->
             val bundle = drink.toBundle()
             findNavController().navigate(R.id.action_listFragment_to_detailFragment, bundle)
         }
         binding.recyclerViewDrinks.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewDrinks.adapter = drinksAdapter
+
+        binding.recyclerViewDrinks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = binding.recyclerViewDrinks.layoutManager as LinearLayoutManager
+                if (layoutManager.findLastVisibleItemPosition() == drinksAdapter.itemCount - 1) {
+                    viewModel.loadNextDrinks()
+                }
+            }
+        })
     }
 
     private fun observeDrinks() {
         viewModel.drinks.observe(viewLifecycleOwner, Observer { drinks ->
-            binding.progressBar.visibility = View.GONE // Ocultar el loader
+            binding.progressBar.visibility = View.GONE
             drinks?.let {
                 drinksAdapter.submitList(it)
             }
@@ -79,12 +88,12 @@ class ListFragment : Fragment() {
 
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
             binding.progressBar.visibility = if (loading) {
-                View.VISIBLE // Mostrar el loader
+                View.VISIBLE
             } else {
-                View.GONE // Ocultar el loader
+                View.GONE
             }
         }
-        // Observar mensajes de error
+
         viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
@@ -116,20 +125,14 @@ class ListFragment : Fragment() {
         builder.setTitle("Aviso")
         builder.setMessage("¿Deseas salir de la aplicación?")
         builder.setPositiveButton("Aceptar") { _, _ ->
-            requireActivity().finish() // Cierra la aplicación
+            requireActivity().finish()
         }
         builder.setNegativeButton("Cancelar") { dialog, _ ->
-            dialog.dismiss() // Cierra el diálogo
+            dialog.dismiss()
         }
-        builder.create().show()    }
-
-
-    override fun onResume() {
-        super.onResume()
-        if (!viewModel.isDataLoaded) {
-            viewModel.searchDrinksByLetters('a', 'z') // O las letras que necesites
-        }
+        builder.create().show()
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

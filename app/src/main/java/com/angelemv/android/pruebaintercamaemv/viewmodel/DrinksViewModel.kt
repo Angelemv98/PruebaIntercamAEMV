@@ -1,6 +1,5 @@
 package com.angelemv.android.pruebaintercamaemv.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,35 +19,34 @@ class DrinksViewModel(private val repository: DrinksRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String>()
     val errorMessage: LiveData<String> get() = _errorMessage
 
-    var isDataLoaded = false
+    private var isDataLoaded = false
+    private var currentLetter: Char = 'a'
 
-    fun searchDrinksByLetters(startLetter: Char, endLetter: Char) {
-        if (isDataLoaded) {
-            // Los datos ya están cargados, no es necesario volver a cargar
+    fun loadNextDrinks() {
+        if (currentLetter > 'z' || isDataLoaded) {
             return
         }
+        searchDrinksByLetters(currentLetter, currentLetter)
+        currentLetter++
+    }
 
+    private fun searchDrinksByLetters(startLetter: Char, endLetter: Char) {
         _isLoading.value = true
         viewModelScope.launch {
             try {
-                val allDrinks = mutableListOf<Drink>()
-                for (letter in startLetter..endLetter) {
-                    val response = repository.searchDrinks(letter.toString())
-
-                    if (!response.drinks.isNullOrEmpty()) {
-                        allDrinks.addAll(response.drinks)
-                    }
+                val response = repository.searchDrinks(startLetter.toString())
+                if (!response.drinks.isNullOrEmpty()) {
+                    val currentDrinks = _drinks.value?.toMutableList() ?: mutableListOf()
+                    currentDrinks.addAll(response.drinks)
+                    _drinks.value = currentDrinks
+                } else {
+                    isDataLoaded = true
                 }
-                _drinks.value = allDrinks
-                isDataLoaded = true // Marcar que los datos han sido cargados
             } catch (e: Exception) {
-                Log.e("DrinksViewModel", "Error al buscar bebidas: ${e.message}", e)
                 _errorMessage.value = "Error al cargar los datos. Por favor, verifica tu conexión."
             } finally {
                 _isLoading.value = false
             }
         }
     }
-
-
 }

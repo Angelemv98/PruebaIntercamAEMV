@@ -19,7 +19,6 @@ class LoginFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    // Instanciamos el ViewModel usando el ViewModelFactory
     private val viewModel: LoginViewModel by viewModels {
         val db = AppDatabase.getDatabase(requireContext())
         val usuarioDao = db.usuarioDao()
@@ -37,6 +36,7 @@ class LoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bindingConf()
+        viewModel.createDefaultUserIfNotExists()
     }
 
     private fun bindingConf() {
@@ -45,20 +45,19 @@ class LoginFragment : Fragment() {
             it.btnLogin.setOnClickListener {
                 val userInput = binding.etUser.text.toString()
                 val passwordInput = binding.etPassword.text.toString()
-                // Verificar si los campos están vacíos
                 if (userInput.isEmpty() || passwordInput.isEmpty()) {
                     if (userInput.isEmpty()) {
                         binding.tilUser.error = "Campos vacíos"
                     } else {
-                        binding.tilUser.error = null // Limpiar el error si el campo se llena
+                        binding.tilUser.error = null
                     }
 
                     if (passwordInput.isEmpty()) {
                         binding.tilPassword.error = "Campos vacíos"
                     } else {
-                        binding.tilPassword.error = null // Limpiar el error si el campo se llena
+                        binding.tilPassword.error = null
                     }
-                    return@setOnClickListener // No continuar si hay campos vacíos
+                    return@setOnClickListener
                 }
 
                 viewModel.setUser(userInput)

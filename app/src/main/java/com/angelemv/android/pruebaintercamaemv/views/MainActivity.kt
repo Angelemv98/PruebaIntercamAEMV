@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.angelemv.android.pruebaintercamaemv.databinding.ActivityMainBinding
-import com.angelemv.android.pruebaintercamaemv.models.data.AppDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -16,10 +13,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-
-
-        // Configurar la Toolbar como la ActionBar
         setSupportActionBar(binding.toolbar)
 
         val navHostFragment = supportFragmentManager

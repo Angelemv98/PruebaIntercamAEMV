@@ -11,5 +11,8 @@
     <string name="label_ingredients">Ingredientes</string>
     <string name="label_instructions">Instrucciones</string>
     <string name="favorites">Favoritos</string>
+    <string name="emptyfavorites">No hay favoritos aún :(</string>
+    <string name="label_name">Prueba de Morales Varela Angel Ernesto</string>
+    <string name="label_help">User = Admin || Password = admin123</string>
 
 </resources>

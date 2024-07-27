@@ -1,4 +1,3 @@
-// DrinkExtensions.kt
 package com.angelemv.android.pruebaintercamaemv.models.data
 
 import android.os.Bundle
@@ -114,7 +113,6 @@ fun Bundle.toDrink(): Drink {
         dateModified = getString("dateModified")
     )
 }
-// DrinkExtensions.kt
 fun Drink.getFormattedIngredients(): String {
     val ingredients = listOfNotNull(
         strIngredient1, strIngredient2, strIngredient3, strIngredient4,

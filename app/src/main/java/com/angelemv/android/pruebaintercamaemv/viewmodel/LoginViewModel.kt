@@ -1,5 +1,4 @@
 import android.util.Base64
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.angelemv.android.pruebaintercamaemv.models.data.AppDatabase
@@ -14,27 +13,22 @@ class LoginViewModel(private val usuarioDao: UsuarioDao) : ViewModel() {
 
     private var _user: String? = null
     private var _password: String? = null
-    private lateinit var database: AppDatabase
-    init {
-        createDefaultUserIfNotExists()
-    }
+
     fun setUser(user: String) {
         _user = user
-    }
-
-    fun setDatabase(db: AppDatabase) {
-        database = db
     }
 
     fun setPassword(password: String) {
         _password = password
     }
 
-    private fun createDefaultUserIfNotExists() {
+    fun createDefaultUserIfNotExists() {
         viewModelScope.launch(Dispatchers.IO) {
             val defaultUser = Usuario(username = "Admin", password = encriptToBase64("admin123"))
-            // Verificar si ya existe un usuario
             val existingUser = usuarioDao.getUsuario(defaultUser.username, defaultUser.password)
+
+            if (existingUser == null) usuarioDao.insert(defaultUser)
+
         }
     }
 
@@ -52,7 +46,6 @@ class LoginViewModel(private val usuarioDao: UsuarioDao) : ViewModel() {
             onResult(false)
         }
     }
-
 
     private fun encriptToBase64(textToEncrypt: String): String {
         val data = textToEncrypt.toByteArray(Charsets.UTF_8)

@@ -56,7 +56,7 @@ class ListFragment : Fragment() {
 
         setupRecyclerView()
         observeDrinks()
-        viewModel.searchDrinks("a") // Llamar a la API al iniciar
+        viewModel.searchDrinksByLetters('a', 'z') // Llamar a la API al iniciar
     }
 
 
@@ -124,6 +124,12 @@ class ListFragment : Fragment() {
         builder.create().show()    }
 
 
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.isDataLoaded) {
+            viewModel.searchDrinksByLetters('a', 'z') // O las letras que necesites
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -41,7 +41,7 @@ class LoginFragment : Fragment() {
 
     private fun bindingConf() {
         binding.let {
-            Picasso.get().load("https://cdn.icon-icons.com/icons2/3398/PNG/512/android_logo_icon_214673.png").into(it.imageViewIcon)
+            Picasso.get().load("https://scontent.fmex34-1.fna.fbcdn.net/v/t39.30808-6/336503741_586003636816113_3726140264424255795_n.png?_nc_cat=103&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeGfIFL2YYVKqEvgMkqP5Di79LVZpd0kw-f0tVml3STD5yXzOo5f4r_MnlsVg-bdOgyZ32FCsbZ90nmKQhOcobnu&_nc_ohc=eFKykVL378oQ7kNvgEz3kQX&_nc_ht=scontent.fmex34-1.fna&oh=00_AYC_cKob_lqpUC9cmNNWafAZPyP_S-LabjRiwYMuaDhg4Q&oe=66AA04AD").into(it.imageViewIcon)
             it.btnLogin.setOnClickListener {
                 val userInput = binding.etUser.text.toString()
                 val passwordInput = binding.etPassword.text.toString()
@@ -68,7 +68,7 @@ class LoginFragment : Fragment() {
                 viewModel.validateUser { valido: Boolean ->
                     if (!valido) {
                         binding.errorLabel.visibility = View.VISIBLE
-                        binding.errorLabel.text = "Usuario y contraseña incorrectos, intente de nuevo."
+                        binding.errorLabel.text = "Usuario y/o contraseña incorrectos, intente de nuevo."
                     } else {
                         binding.tilUser.error = null
                         binding.tilPassword.error = null

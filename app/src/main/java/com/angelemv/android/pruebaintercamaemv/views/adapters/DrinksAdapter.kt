@@ -36,7 +36,7 @@ class DrinksAdapter(private val onItemClickListener: (Drink) -> Unit) :
             // Usar Picasso para cargar la imagen
             Picasso.get()
                 .load(drink.strDrinkThumb)
-                .placeholder(R.drawable.ic_login) // Imagen de placeholder
+                .placeholder(R.drawable.ic_drink) // Imagen de placeholder
                 .error(R.drawable.ic_error) // Imagen de error
                 .into(binding.imgDrink)
         }
